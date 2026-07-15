@@ -1,0 +1,8 @@
+node_modules/
+vendor/
+.git/
+.DS_Store
+.env
+storage/framework/
+storage/logs/
+storage/app/

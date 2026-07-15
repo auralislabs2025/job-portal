@@ -1,0 +1,88 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: abn-recruitment-app
+    container_name: abn-app
+    restart: unless-stopped
+    working_dir: /var/www
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_CONNECTION=pgsql
+      - DB_HOST=pgsql
+      - DB_PORT=5432
+      - DB_DATABASE=abn_recruitment
+      - DB_USERNAME=abn_user
+      - DB_PASSWORD=abn_secret
+      - SESSION_DRIVER=redis
+      - SESSION_LIFETIME=1440
+      - CACHE_STORE=redis
+      - QUEUE_CONNECTION=redis
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=null
+      - REDIS_PORT=6379
+      - FILESYSTEM_DISK=local
+    volumes:
+      - .:/var/www
+      - ./storage:/var/www/storage
+    depends_on:
+      pgsql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - abn-network
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: abn-nginx
+    restart: unless-stopped
+    ports:
+      - "8082:80"
+    volumes:
+      - .:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - abn-network
+
+  pgsql:
+    image: postgres:18-alpine
+    container_name: abn-pgsql
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: abn_recruitment
+      POSTGRES_USER: abn_user
+      POSTGRES_PASSWORD: abn_secret
+    volumes:
+      - pgsql-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U abn_user -d abn_recruitment"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - abn-network
+
+  redis:
+    image: redis:8-alpine
+    container_name: abn-redis
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - abn-network
+
+networks:
+  abn-network:
+    driver: bridge
+
+volumes:
+  pgsql-data:
+    driver: local
+  redis-data:
+    driver: local
