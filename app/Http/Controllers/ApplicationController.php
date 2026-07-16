@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Application;
 use App\Models\ApplicationDocument;
-use App\Models\JobPosting;
+use App\Models\GroupCompany;
 use App\Services\ActivityLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -33,9 +33,9 @@ class ApplicationController extends Controller
     public function index(): View
     {
         abort_unless(auth()->user()->hasPermission('view_applications'), 403);
-        $jobs = JobPosting::forUser(auth()->user())->orderBy('title')->get(['id', 'code', 'title']);
+        $agencies = GroupCompany::forUser(auth()->user())->where('is_active', true)->orderBy('name')->get(['id', 'name']);
 
-        return view('applications.index', compact('jobs'));
+        return view('applications.index', compact('agencies'));
     }
 
     public function data(Request $request): JsonResponse
@@ -61,9 +61,6 @@ class ApplicationController extends Controller
             ->addColumn('group_company', fn (Application $app) => e($app->jobPosting?->groupCompany?->name ?? '—'))
             ->editColumn('submitted_at', fn (Application $app) => $app->submitted_at ? $app->submitted_at->format('M d, Y') : '—')
             ->editColumn('mobile', fn (Application $app) => e($app->mobile ?? '—'))
-            ->filterColumn('job_posting_id', function ($query, $keyword) {
-                $query->where('job_postings.title', 'ilike', "%{$keyword}%");
-            })
             ->filter(function ($query) use ($request) {
                 if ($search = $request->input('search.value')) {
                     $query->where(function ($q) use ($search) {
@@ -77,9 +74,12 @@ class ApplicationController extends Controller
                 if ($status = $request->input('status_filter')) {
                     $query->where('applications.status', $status);
                 }
-                if ($jobId = $request->input('job_filter')) {
-                    $query->where('applications.job_posting_id', $jobId);
+                if ($agencyId = $request->input('agency_filter')) {
+                    $query->where('job_postings.group_company_id', $agencyId);
                 }
+            })
+            ->order(function ($query) {
+                $query->orderBy('applications.created_at', 'desc');
             })
             ->rawColumns(['status', 'actions', 'candidate_display_name'])
             ->make(true);

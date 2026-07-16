@@ -19,7 +19,7 @@ class GroupCompany extends Model
 
     protected $fillable = [
         'name', 'code', 'email', 'phone', 'address', 'city',
-        'country', 'description', 'is_active',
+        'country', 'description', 'logo', 'is_active',
     ];
 
     protected function casts(): array

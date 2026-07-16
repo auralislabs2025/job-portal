@@ -211,6 +211,7 @@ body.login-body {
 .card-header h3 { font-size: 1rem; font-weight: 700; color: var(--navy-deep); }
 
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+.company-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
 .stat-card { background: var(--white); border-radius: var(--radius); padding: 1.2rem; box-shadow: var(--card-shadow); border: 1px solid var(--gray-border); display: flex; align-items: flex-start; gap: 0.8rem; }
 .stat-icon { width: 42px; height: 42px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
 .stat-icon.blue { background: var(--blue-light); color: var(--blue-corporate); }
@@ -294,6 +295,7 @@ body.dark-mode .badge-interview { background: #2E1065; color: #C4B5FD; }
 @media (max-width: 1024px) {
     .grid-2, .grid-3 { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .company-grid { grid-template-columns: repeat(2, 1fr); }
     .sidebar { z-index: 55; }
 }
 @media (max-width: 768px) {
@@ -301,6 +303,7 @@ body.dark-mode .badge-interview { background: #2E1065; color: #C4B5FD; }
     .sidebar.open { transform: translateX(0); box-shadow: 0 0 30px rgba(0,0,0,0.3); }
     .main-content { margin-left: 0; width: 100%; min-width: 0; }
     .stats-grid { grid-template-columns: 1fr; }
+    .company-grid { grid-template-columns: 1fr; }
     .topbar { padding: 0 0.8rem; }
     .page-content { padding: 1rem; }
     .modal { width: 95%; padding: 1rem; }

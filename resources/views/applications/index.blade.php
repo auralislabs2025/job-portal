@@ -20,10 +20,10 @@
             <option value="hired">Hired</option>
             <option value="rejected">Rejected</option>
         </select>
-        <select id="jobFilter">
-            <option value="">All Jobs</option>
-            @foreach ($jobs as $job)
-                <option value="{{ $job->id }}">{{ $job->code ? $job->code . ' — ' : '' }}{{ $job->title }}</option>
+        <select id="agencyFilter">
+            <option value="">All Agencies</option>
+            @foreach ($agencies as $agency)
+                <option value="{{ $agency->id }}">{{ $agency->name }}</option>
             @endforeach
         </select>
     </div>
@@ -59,7 +59,7 @@
                 url: '{{ route('applications.data') }}',
                 data: function (d) {
                     d.status_filter = $('#statusFilter').val();
-                    d.job_filter = $('#jobFilter').val();
+                    d.agency_filter = $('#agencyFilter').val();
                 }
             },
             columns: [
@@ -69,17 +69,17 @@
                 { data: 'job_posting_id', name: 'job_posting_id', searchable: false },
                 { data: 'group_company', name: 'group_company', searchable: false, orderable: false },
                 { data: 'status', name: 'status', searchable: false, orderable: false },
-                { data: 'submitted_at', name: 'submitted_at', searchable: false },
+                { data: 'submitted_at', name: 'created_at', searchable: false },
                 { data: 'actions', name: 'actions', searchable: false, orderable: false },
             ],
             pageLength: 15,
-            order: [[0, 'desc']],
+            order: [[6, 'desc']],
             language: { search: '', searchPlaceholder: 'Search...' },
             dom: '<"top"lf>rt<"bottom"ip>',
         });
 
         document.getElementById('statusFilter').addEventListener('change', () => table.ajax.reload());
-        document.getElementById('jobFilter').addEventListener('change', () => table.ajax.reload());
+        document.getElementById('agencyFilter').addEventListener('change', () => table.ajax.reload());
         document.getElementById('appSearch').addEventListener('keyup', function () {
             table.search(this.value).draw();
         });

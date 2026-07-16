@@ -7,6 +7,8 @@ use App\Http\Requests\GroupCompanyUpdateRequest;
 use App\Models\GroupCompany;
 use App\Services\ActivityLogger;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class GroupCompanyController extends Controller
@@ -19,20 +21,27 @@ class GroupCompanyController extends Controller
             'jobPostings as pending_approval' => fn ($q) => $q->where('status', 'pending'),
         ])->latest()->get();
 
+        $countries = DB::table('countries')->orderBy('name')->get(['id', 'name']);
+
         $companiesJson = $companies->map(fn ($c) => [
             'id' => $c->id, 'name' => $c->name, 'code' => $c->code,
             'email' => $c->email, 'phone' => $c->phone, 'city' => $c->city,
             'country' => $c->country, 'address' => $c->address,
-            'description' => $c->description, 'is_active' => $c->is_active,
+            'description' => $c->description, 'logo' => $c->logo,
+            'is_active' => $c->is_active,
         ]);
 
-        return view('group-companies.index', compact('companies', 'companiesJson'));
+        return view('group-companies.index', compact('companies', 'countries', 'companiesJson'));
     }
 
     public function store(GroupCompanyStoreRequest $request): RedirectResponse
     {
         abort_unless(auth()->user()->hasPermission('manage_companies'), 403);
-        $company = GroupCompany::create($request->validated());
+        $data = $request->validated();
+        if ($request->hasFile('logo')) {
+            $data['logo'] = $request->file('logo')->store('logos', 'public');
+        }
+        $company = GroupCompany::create($data);
 
         ActivityLogger::log(
             action: 'created',
@@ -49,7 +58,16 @@ class GroupCompanyController extends Controller
     {
         abort_unless(auth()->user()->hasPermission('manage_companies'), 403);
         $old = $groupCompany->toArray();
-        $groupCompany->update($request->validated());
+        $data = $request->validated();
+        if ($request->hasFile('logo')) {
+            if ($groupCompany->logo) {
+                Storage::disk('public')->delete($groupCompany->logo);
+            }
+            $data['logo'] = $request->file('logo')->store('logos', 'public');
+        } else {
+            unset($data['logo']);
+        }
+        $groupCompany->update($data);
 
         ActivityLogger::log(
             action: 'updated',

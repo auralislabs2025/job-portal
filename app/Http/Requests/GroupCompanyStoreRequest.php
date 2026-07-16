@@ -20,8 +20,9 @@ class GroupCompanyStoreRequest extends FormRequest
             'phone' => 'nullable|string|max:50',
             'address' => 'nullable|string',
             'city' => 'nullable|string|max:100',
-            'country' => 'nullable|string|max:100',
+            'country' => 'nullable|string|max:100|exists:countries,name',
             'description' => 'nullable|string',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,gif,svg,webp|max:2048',
             'is_active' => 'boolean',
         ];
     }

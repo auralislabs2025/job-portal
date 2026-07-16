@@ -130,7 +130,12 @@
                         </div>
                         <div class="form-group">
                             <label>Nationality <span class="required">*</span></label>
-                            <input type="text" name="personal[nationality]" value="{{ old('personal.nationality') }}" required>
+                            <select name="personal[nationality]" required>
+                                <option value="">Select Nationality</option>
+                                @foreach ($countries as $country)
+                                    <option value="{{ $country->name }}" {{ old('personal.nationality') === $country->name ? 'selected' : '' }}>{{ $country->name }}</option>
+                                @endforeach
+                            </select>
                             @error('personal.nationality')<span class="field-error">{{ $message }}</span>@enderror
                         </div>
                         <div class="form-group">
@@ -150,16 +155,37 @@
                         </div>
                         <div class="form-group">
                             <label>Mobile <span class="required">*</span></label>
-                            <input type="text" name="personal[mobile]" value="{{ old('personal.mobile') }}" required>
+                            <div style="display:flex;gap:0.3rem;">
+                                <select name="personal[mobile_code]" style="width:100px;flex-shrink:0;padding:0.5rem 0.7rem;border:1.5px solid var(--gray-border);border-radius:var(--radius-sm);font-size:0.85rem;">
+                                    <option value="">Code</option>
+                                    @foreach ($countries as $country)
+                                        <option value="+{{ $country->phone_code }}" {{ old('personal.mobile_code') === '+'.$country->phone_code ? 'selected' : '' }}>+{{ $country->phone_code }}</option>
+                                    @endforeach
+                                </select>
+                                <input type="text" name="personal[mobile]" value="{{ old('personal.mobile') }}" required placeholder="501234567" style="flex:1;padding:0.5rem 0.7rem;border:1.5px solid var(--gray-border);border-radius:var(--radius-sm);font-size:0.85rem;">
+                            </div>
                             @error('personal.mobile')<span class="field-error">{{ $message }}</span>@enderror
                         </div>
                         <div class="form-group">
                             <label>Alternate Contact</label>
-                            <input type="text" name="personal[alternate_contact]" value="{{ old('personal.alternate_contact') }}">
+                            <div style="display:flex;gap:0.3rem;">
+                                <select name="personal[alternate_code]" style="width:100px;flex-shrink:0;padding:0.5rem 0.7rem;border:1.5px solid var(--gray-border);border-radius:var(--radius-sm);font-size:0.85rem;">
+                                    <option value="">Code</option>
+                                    @foreach ($countries as $country)
+                                        <option value="+{{ $country->phone_code }}" {{ old('personal.alternate_code') === '+'.$country->phone_code ? 'selected' : '' }}>+{{ $country->phone_code }}</option>
+                                    @endforeach
+                                </select>
+                                <input type="text" name="personal[alternate_contact]" value="{{ old('personal.alternate_contact') }}" placeholder="501234567" style="flex:1;padding:0.5rem 0.7rem;border:1.5px solid var(--gray-border);border-radius:var(--radius-sm);font-size:0.85rem;">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Current Country</label>
-                            <input type="text" name="personal[current_country]" value="{{ old('personal.current_country') }}">
+                            <select name="personal[current_country]">
+                                <option value="">Select Country</option>
+                                @foreach ($countries as $country)
+                                    <option value="{{ $country->name }}" {{ old('personal.current_country') === $country->name ? 'selected' : '' }}>{{ $country->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Current City</label>
@@ -341,8 +367,13 @@
                             <input type="date" name="passport[passport_expiry_date]" value="{{ old('passport.passport_expiry_date') }}">
                         </div>
                         <div class="form-group">
-                            <label>Issuing Country</label>
-                            <input type="text" name="passport[passport_issuing_country]" value="{{ old('passport.passport_issuing_country') }}">
+                            <label>Passport Issuing Country</label>
+                            <select name="passport[passport_issuing_country]">
+                                <option value="">Select Country</option>
+                                @foreach ($countries as $country)
+                                    <option value="{{ $country->name }}" {{ old('passport.passport_issuing_country') === $country->name ? 'selected' : '' }}>{{ $country->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Visa Status</label>
@@ -377,7 +408,12 @@
                         </div>
                         <div class="form-group">
                             <label>License Country</label>
-                            <input type="text" name="driving[license_country]" value="{{ old('driving.license_country') }}">
+                            <select name="driving[license_country]">
+                                <option value="">Select Country</option>
+                                @foreach ($countries as $country)
+                                    <option value="{{ $country->name }}" {{ old('driving.license_country') === $country->name ? 'selected' : '' }}>{{ $country->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>License Type</label>

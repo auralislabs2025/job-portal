@@ -5,15 +5,8 @@
     <span class="topbar-company">ABN Corporation</span>
 </div>
 <div class="topbar-right">
-    <div class="topbar-search" style="position:relative;">
-        <input type="text" placeholder="Search..." style="padding:0.4rem 0.8rem; border:1.5px solid var(--gray-border); border-radius:50px; font-size:0.82rem; width:180px; background:var(--gray-bg);">
-    </div>
     <button class="topbar-icon" onclick="toggleDarkMode()" aria-label="Dark mode">
         <i class="fa-solid fa-moon"></i>
-    </button>
-    <button class="topbar-icon" aria-label="Notifications">
-        <i class="fa-solid fa-bell"></i>
-        <span class="badge">5</span>
     </button>
     <div class="topbar-profile" onclick="event.stopPropagation();" style="cursor:pointer;position:relative;">
         <div class="topbar-avatar" onclick="document.getElementById('userDropdown').classList.toggle('show')">{{ Str::of(Auth::user()->name)->substr(0, 2)->upper() }}</div>

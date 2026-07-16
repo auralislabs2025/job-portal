@@ -6,6 +6,7 @@ use App\Http\Requests\PublicApplicationStoreRequest;
 use App\Models\JobPosting;
 use App\Services\ApplicationSubmissionService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class PublicApplicationController extends Controller
@@ -20,7 +21,9 @@ class PublicApplicationController extends Controller
             abort(410, 'This job posting has closed.');
         }
 
-        return view('apply.show', compact('jobPosting'));
+        $countries = DB::table('countries')->orderBy('name')->get(['id', 'name', 'phone_code']);
+
+        return view('apply.show', compact('jobPosting', 'countries'));
     }
 
     public function store(PublicApplicationStoreRequest $request, JobPosting $jobPosting, ApplicationSubmissionService $service): RedirectResponse

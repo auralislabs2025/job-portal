@@ -14,11 +14,17 @@
         </div>
     </x-slot>
 
-    <div class="stats-grid" id="companiesGrid">
+    <div class="company-grid" id="companiesGrid">
         @forelse ($companies as $company)
             <div class="card company-card">
                 <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:0.8rem;">
-                    <div class="stat-icon blue" style="font-size:1.5rem;">🏢</div>
+                    <div class="stat-icon blue" style="font-size:1.5rem;overflow:hidden;">
+                        @if($company->logo)
+                            <img src="{{ Storage::url($company->logo) }}" alt="{{ $company->name }}" style="width:100%;height:100%;object-fit:cover;">
+                        @else
+                            🏢
+                        @endif
+                    </div>
                     <div>
                         <h3 style="font-size:1rem;font-weight:700;color:var(--navy-deep);">{{ $company->name }}</h3>
                         @if($company->code)
@@ -55,7 +61,7 @@
 
     {{-- Add/Edit Modal --}}
     <x-modal-wrapper name="companyModal" title="Add New Group Company">
-        <form method="POST" action="{{ route('group-companies.store') }}" id="companyForm">
+        <form method="POST" action="{{ route('group-companies.store') }}" id="companyForm" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="_method" id="companyFormMethod" value="POST">
             <div class="form-group">
@@ -85,13 +91,25 @@
             <div class="grid-2">
                 <div class="form-group">
                     <label>Country</label>
-                    <input type="text" name="country" id="companyCountry" class="form-control" placeholder="UAE">
+                    <select name="country" id="companyCountry" class="form-control">
+                        <option value="">Select Country</option>
+                        @foreach ($countries as $country)
+                            <option value="{{ $country->name }}">{{ $country->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>
                         <input type="checkbox" name="is_active" id="companyIsActive" value="1" checked>
                         Active
                     </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Logo</label>
+                <input type="file" name="logo" id="companyLogo" class="form-control" accept="image/*">
+                <div id="logoPreview" style="margin-top:0.5rem;display:none;">
+                    <img src="" alt="Logo preview" style="max-width:100px;max-height:60px;border-radius:6px;border:1px solid var(--gray-border);">
                 </div>
             </div>
             <div class="form-group">
@@ -115,6 +133,18 @@
     <script>
         const companies = @json($companiesJson);
 
+        document.getElementById('companyLogo')?.addEventListener('change', function() {
+            const preview = document.getElementById('logoPreview');
+            const img = preview.querySelector('img');
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) { img.src = e.target.result; preview.style.display = 'block'; };
+                reader.readAsDataURL(this.files[0]);
+            } else {
+                preview.style.display = 'none';
+            }
+        });
+
         window.editCompany = function(id) {
             const company = companies.find(c => c.id === id);
             if (!company) return;
@@ -134,6 +164,15 @@
             document.getElementById('companyDescription').value = company.description || '';
             document.getElementById('companyIsActive').checked = company.is_active;
 
+            const logoPreview = document.getElementById('logoPreview');
+            const logoImg = logoPreview.querySelector('img');
+            if (company.logo) {
+                logoImg.src = '/storage/' + company.logo;
+                logoPreview.style.display = 'block';
+            } else {
+                logoPreview.style.display = 'none';
+            }
+
             openModal('companyModal');
         };
 
@@ -149,6 +188,8 @@
             document.getElementById('companySubmitBtn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Company';
             document.getElementById('companyForm').reset();
             document.getElementById('companyIsActive').checked = true;
+            document.getElementById('companyLogo').value = '';
+            document.getElementById('logoPreview').style.display = 'none';
         });
     </script>
     @endpush

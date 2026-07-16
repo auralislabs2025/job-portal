@@ -18,14 +18,14 @@ class PublicApplicationStoreRequest extends FormRequest
             'personal.last_name'             => 'required|string|max:100',
             'personal.gender'                => 'nullable|string|max:50',
             'personal.date_of_birth'         => 'nullable|date',
-            'personal.nationality'           => 'required|string|max:100',
+            'personal.nationality'           => 'required|string|max:100|exists:countries,name',
             'personal.marital_status'        => 'nullable|string|max:50',
             'personal.email'                 => 'required|email|max:255',
             'personal.mobile'                => 'required|string|max:50',
             'personal.alternate_contact'     => 'nullable|string|max:50',
             'personal.current_address'       => 'nullable|string|max:1000',
             'personal.permanent_address'     => 'nullable|string|max:1000',
-            'personal.current_country'       => 'nullable|string|max:100',
+            'personal.current_country'       => 'nullable|string|max:100|exists:countries,name',
             'personal.current_city'          => 'nullable|string|max:100',
             'personal.postal_code'           => 'nullable|string|max:20',
 
@@ -60,13 +60,13 @@ class PublicApplicationStoreRequest extends FormRequest
 
             'passport.passport_number'           => 'nullable|string|max:50',
             'passport.passport_expiry_date'      => 'nullable|date',
-            'passport.passport_issuing_country'  => 'nullable|string|max:100',
+            'passport.passport_issuing_country'  => 'nullable|string|max:100|exists:countries,name',
             'passport.visa_status'               => 'nullable|string|max:50',
             'passport.visa_type'                 => 'nullable|string|max:100',
             'passport.visa_expiry_date'          => 'nullable|date',
 
             'driving.license_number'             => 'nullable|string|max:50',
-            'driving.license_country'            => 'nullable|string|max:100',
+            'driving.license_country'            => 'nullable|string|max:100|exists:countries,name',
             'driving.license_type'               => 'nullable|string|max:50',
             'driving.license_expiry_date'        => 'nullable|date',
 

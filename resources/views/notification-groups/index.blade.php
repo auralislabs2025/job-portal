@@ -15,7 +15,7 @@
     </x-slot>
 
     @if($groups->count())
-        <div class="stats-grid" id="groupsGrid">
+        <div class="company-grid" id="groupsGrid">
             @foreach ($groups as $group)
                 <div class="card ng-card">
                     <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:0.6rem;">

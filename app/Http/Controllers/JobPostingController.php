@@ -22,7 +22,7 @@ class JobPostingController extends Controller
     public function index(): View
     {
         abort_unless(auth()->user()->hasPermission('post_jobs'), 403);
-        $companies = GroupCompany::forUser(auth()->user())->where('is_active', true)->orderBy('name')->get();
+        $companies = GroupCompany::where('is_active', true)->orderBy('name')->get();
 
         return view('jobs.index', compact('companies'));
     }
