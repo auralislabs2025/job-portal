@@ -424,3 +424,30 @@ window.saveUsers = saveUsers;
 window.generateUserId = generateUserId;
 window.getCurrentUser = getCurrentUser;
 window.getInitials = getInitials;
+
+let _confirmForm = null;
+
+function showConfirm(message, form) {
+    document.getElementById('confirmMessage').textContent = message;
+    _confirmForm = form;
+    const btn = document.getElementById('confirmDeleteBtn');
+    if (message.toLowerCase().includes('reject')) {
+        btn.innerHTML = '<i class="fa-solid fa-xmark"></i> Reject';
+    } else if (message.toLowerCase().includes('revert')) {
+        btn.innerHTML = '<i class="fa-solid fa-rotate-left"></i> Revert';
+    } else {
+        btn.innerHTML = '<i class="fa-solid fa-trash"></i> Delete';
+    }
+    openModal('confirmModal');
+}
+
+function confirmAction() {
+    if (_confirmForm) {
+        _confirmForm.submit();
+    }
+    closeModal('confirmModal');
+    _confirmForm = null;
+}
+
+window.showConfirm = showConfirm;
+window.confirmAction = confirmAction;

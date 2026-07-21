@@ -45,7 +45,7 @@
                         <span class="text-muted">Created {{ $company->created_at->format('M d, Y') }}</span>
                         <div>
                             <button class="btn btn-sm btn-outline" onclick="editCompany({{ $company->id }})"><i class="fa-solid fa-pen"></i></button>
-                            <form method="POST" action="{{ route('group-companies.destroy', $company) }}" style="display:inline" onsubmit="return confirm('Delete {{ $company->name }}? This action cannot be undone.')">
+                            <form method="POST" action="{{ route('group-companies.destroy', $company) }}" style="display:inline" onsubmit="event.preventDefault(); showConfirm('Delete {{ $company->name }}? This action cannot be undone.', this)">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>

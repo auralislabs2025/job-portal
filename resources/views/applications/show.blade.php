@@ -343,7 +343,7 @@
                     <button class="btn btn-success"><i class="fa-solid fa-handshake"></i> Mark as Hired</button>
                 </form>
             @endif
-            <form action="{{ route('applications.status', $application) }}" method="POST" style="display:inline;" onsubmit="return confirm('Reject this candidate?')">
+            <form action="{{ route('applications.status', $application) }}" method="POST" style="display:inline;" onsubmit="event.preventDefault(); showConfirm('Reject this candidate?', this)">
                 @csrf @method('PATCH')
                 <input type="hidden" name="status" value="rejected">
                 <button class="btn btn-danger"><i class="fa-solid fa-xmark"></i> Reject</button>

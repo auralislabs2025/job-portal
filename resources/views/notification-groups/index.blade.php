@@ -41,7 +41,7 @@
                     @can('manage_notification_groups')
                         <div style="margin-top:0.8rem;">
                             <button class="btn btn-sm btn-outline" onclick="editNotificationGroup({{ $group->id }})"><i class="fa-solid fa-pen"></i> Edit</button>
-                            <form method="POST" action="{{ route('notification-groups.destroy', $group) }}" style="display:inline" onsubmit="return confirm('Delete {{ $group->name }}? This action cannot be undone.')">
+                            <form method="POST" action="{{ route('notification-groups.destroy', $group) }}" style="display:inline" onsubmit="event.preventDefault(); showConfirm('Delete {{ $group->name }}? This action cannot be undone.', this)">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i> Delete</button>
@@ -86,7 +86,7 @@
                 <label>Members</label>
                     <select name="user_ids[]" id="notificationGroupMembers" class="form-control" multiple style="height:120px;">
                     @foreach ($allUsers as $user)
-                        <option value="{{ $user->id }}" data-company-id="{{ $user->group_company_id ?? '0' }}">{{ $user->name }} ({{ $user->groupCompany?->name ?? 'All' }})</option>
+                        <option value="{{ $user->id }}">{{ $user->name }} — {{ $user->groupCompany?->name ?? 'All Companies' }}</option>
                     @endforeach
                 </select>
                 <small class="text-muted">Hold Ctrl/Cmd to select multiple members.</small>
@@ -104,20 +104,6 @@
     <script>
         const groupsData = @json($groups->items());
 
-        function filterMembersByCompany() {
-            const companyId = document.getElementById('notificationGroupCompany').value;
-            const memberSelect = document.getElementById('notificationGroupMembers');
-            Array.from(memberSelect.options).forEach(opt => {
-                opt.style.display = !companyId || opt.dataset.companyId === companyId || opt.dataset.companyId === '0' ? '' : 'none';
-            });
-            // Clear selection for hidden options
-            Array.from(memberSelect.options).forEach(opt => {
-                if (opt.style.display === 'none') opt.selected = false;
-            });
-        }
-
-        document.getElementById('notificationGroupCompany').addEventListener('change', filterMembersByCompany);
-
         window.openNotificationGroupModal = function() {
             document.getElementById('notificationGroupForm').action = '{{ route('notification-groups.store') }}';
             document.getElementById('notificationGroupFormMethod').value = 'POST';
@@ -125,8 +111,6 @@
             document.querySelector('#notificationGroupModal .modal-header h3').textContent = 'Create Notification Group';
             document.getElementById('notificationGroupSubmitBtn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Group';
             document.getElementById('notificationGroupForm').reset();
-            // Show all members when no company selected
-            Array.from(document.getElementById('notificationGroupMembers').options).forEach(opt => opt.style.display = '');
             openModal('notificationGroupModal');
         };
 

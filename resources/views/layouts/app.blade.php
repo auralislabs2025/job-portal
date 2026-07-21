@@ -34,6 +34,7 @@
     </div>
 
     <x-flash-messages />
+    <x-confirm-modal />
     <script src="{{ asset('js/app.js') }}"></script>
     @stack('scripts')
 </body>

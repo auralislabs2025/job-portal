@@ -8,7 +8,7 @@
                 <i class="fa-solid {{ $user->status === 'active' ? 'fa-user-slash' : 'fa-user-check' }}"></i>
             </button>
         </form>
-        <form method="POST" action="{{ route('users.destroy', $user) }}" style="display:inline" onsubmit="return confirm('Delete {{ $user->name }}? This action cannot be undone.')">
+        <form method="POST" action="{{ route('users.destroy', $user) }}" style="display:inline" onsubmit="event.preventDefault(); showConfirm('Delete {{ $user->name }}? This action cannot be undone.', this)">
             @csrf
             @method('DELETE')
             <button type="submit" class="btn btn-sm btn-danger" title="Delete"><i class="fa-solid fa-trash"></i></button>

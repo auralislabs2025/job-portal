@@ -98,7 +98,7 @@
                             <input type="hidden" name="action" value="approve">
                             <button type="submit" class="btn btn-success"><i class="fa-solid fa-check"></i> Approve &amp; Publish</button>
                         </form>
-                        <form method="POST" action="{{ route('jobs.status', $job) }}" style="display:inline" onsubmit="return confirm('Reject this job?')">
+                        <form method="POST" action="{{ route('jobs.status', $job) }}" style="display:inline" onsubmit="event.preventDefault(); showConfirm('Reject this job?', this)">
                             @csrf
                             @method('PATCH')
                             <input type="hidden" name="action" value="reject">
@@ -106,7 +106,7 @@
                             <button type="submit" class="btn btn-sm btn-danger">Reject</button>
                         </form>
                     @elseif ($job->status === 'published')
-                        <form method="POST" action="{{ route('jobs.status', $job) }}" style="display:inline" onsubmit="return confirm('Revert this job to pending?')">
+                        <form method="POST" action="{{ route('jobs.status', $job) }}" style="display:inline" onsubmit="event.preventDefault(); showConfirm('Revert this job to pending?', this)">
                             @csrf
                             @method('PATCH')
                             <input type="hidden" name="action" value="revert">
