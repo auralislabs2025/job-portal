@@ -18,7 +18,7 @@ class PublicApplicationController extends Controller
         }
 
         if ($jobPosting->deadline && $jobPosting->deadline->isBefore(now()->startOfDay())) {
-            abort(410, 'This job posting has closed.');
+            return view('apply.closed', compact('jobPosting'));
         }
 
         $countries = DB::table('countries')->orderBy('name')->get(['id', 'name', 'phone_code']);
