@@ -17,12 +17,12 @@
         .apply-container h2 { font-size: 1.3rem; color: var(--navy-deep); margin-bottom: 0.3rem; }
         .apply-container .job-meta { font-size: 0.85rem; color: var(--gray-text); margin-bottom: 1.5rem; }
         .progress-steps { display: flex; gap: 0.3rem; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 0.3rem; }
-        .progress-step { flex: 1; min-width: 60px; text-align: center; font-size: 0.65rem; color: var(--gray-text); position: relative; }
-        .progress-step .step-num { display: block; width: 24px; height: 24px; line-height: 24px; border-radius: 50%; background: var(--gray-border); color: #fff; font-size: 0.7rem; font-weight: 700; margin: 0 auto 0.2rem; }
+        .progress-step { flex: 1; min-width: 60px; text-align: center; font-size: 0.65rem; color: var(--gray-text); position: relative; cursor: pointer; }
+        .progress-step .step-num { display: block; width: 24px; height: 24px; line-height: 24px; border-radius: 50%; background: var(--gray-border); color: #fff; font-size: 0.7rem; font-weight: 700; margin: 0 auto 0.2rem; transition: background 0.3s; }
         .progress-step.active .step-num { background: var(--blue-corporate); }
         .progress-step.done .step-num { background: var(--success); }
-        .progress-step.done .step-num::after { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
-        .section-card { margin-bottom: 1.2rem; }
+        .section-card { margin-bottom: 1.2rem; display: none; }
+        .section-card.active { display: block; }
         .section-card h3 { font-size: 1rem; font-weight: 700; color: var(--navy-deep); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem; }
         .section-card h3 .section-num { background: var(--blue-corporate); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.7rem; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem 1rem; }
@@ -48,7 +48,8 @@
         .repeat-row .btn-remove { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 1rem; padding: 0.5rem; }
         .btn-add-row { background: none; border: 1px dashed var(--gray-border); color: var(--blue-corporate); padding: 0.4rem 0.8rem; border-radius: var(--radius-sm); font-size: 0.8rem; cursor: pointer; margin-top: 0.3rem; }
         .btn-add-row:hover { border-color: var(--blue-corporate); background: #f0f5ff; }
-        .apply-submit { display: flex; justify-content: flex-end; gap: 0.7rem; margin-top: 1.5rem; padding-bottom: 2rem; }
+        .step-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-bottom: 2rem; gap: 0.7rem; }
+        .step-nav .btn { padding: 0.6rem 1.5rem; }
         .apply-footer { text-align: center; padding: 1rem; font-size: 0.75rem; color: var(--gray-text); border-top: 1px solid var(--gray-border); margin-top: 2rem; }
         @media (max-width: 640px) {
             .form-grid { grid-template-columns: 1fr; }
@@ -86,23 +87,23 @@
             </div>
 
             <div class="progress-steps" id="progressSteps">
-                <div class="progress-step active" data-step="1"><span class="step-num">1</span>Personal</div>
-                <div class="progress-step" data-step="2"><span class="step-num">2</span>Job</div>
-                <div class="progress-step" data-step="3"><span class="step-num">3</span>Education</div>
-                <div class="progress-step" data-step="4"><span class="step-num">4</span>Experience</div>
-                <div class="progress-step" data-step="5"><span class="step-num">5</span>Employers</div>
-                <div class="progress-step" data-step="6"><span class="step-num">6</span>Passport</div>
-                <div class="progress-step" data-step="7"><span class="step-num">7</span>License</div>
-                <div class="progress-step" data-step="8"><span class="step-num">8</span>Docs</div>
-                <div class="progress-step" data-step="9"><span class="step-num">9</span>Additional</div>
-                <div class="progress-step" data-step="10"><span class="step-num">10</span>Declare</div>
+                <div class="progress-step active" data-step="1" onclick="goToStep(1)"><span class="step-num">1</span>Personal</div>
+                <div class="progress-step" data-step="2" onclick="goToStep(2)"><span class="step-num">2</span>Job</div>
+                <div class="progress-step" data-step="3" onclick="goToStep(3)"><span class="step-num">3</span>Education</div>
+                <div class="progress-step" data-step="4" onclick="goToStep(4)"><span class="step-num">4</span>Experience</div>
+                <div class="progress-step" data-step="5" onclick="goToStep(5)"><span class="step-num">5</span>Employers</div>
+                <div class="progress-step" data-step="6" onclick="goToStep(6)"><span class="step-num">6</span>Passport</div>
+                <div class="progress-step" data-step="7" onclick="goToStep(7)"><span class="step-num">7</span>License</div>
+                <div class="progress-step" data-step="8" onclick="goToStep(8)"><span class="step-num">8</span>Docs</div>
+                <div class="progress-step" data-step="9" onclick="goToStep(9)"><span class="step-num">9</span>Additional</div>
+                <div class="progress-step" data-step="10" onclick="goToStep(10)"><span class="step-num">10</span>Declare</div>
             </div>
 
             <form method="POST" action="{{ route('apply.store', $jobPosting) }}" enctype="multipart/form-data" id="applyForm">
                 @csrf
 
                 {{-- Section 1: Personal Details --}}
-                <div class="card section-card" data-section="1">
+                <div class="card section-card active" data-section="1">
                     <h3><span class="section-num">1</span> Personal Details</h3>
                     <div class="form-grid">
                         <div class="form-group">
@@ -526,8 +527,17 @@
                     </div>
                 </div>
 
-                <div class="apply-submit">
-                    <button type="submit" class="btn btn-primary" style="padding:0.7rem 2rem;"><i class="fa-solid fa-paper-plane"></i> Submit Application</button>
+                <div class="step-nav" id="stepNav">
+                    <button type="button" class="btn btn-outline" id="prevBtn" onclick="prevStep()" style="visibility:hidden;">
+                        <i class="fa-solid fa-arrow-left"></i> Previous
+                    </button>
+                    <span id="stepCounter" style="font-size:0.8rem;color:var(--gray-text);">Step 1 of 10</span>
+                    <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextStep()">
+                        Next <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn" style="display:none;">
+                        <i class="fa-solid fa-paper-plane"></i> Submit Application
+                    </button>
                 </div>
             </form>
         @endif
@@ -538,6 +548,64 @@
     </div>
 
     <script>
+        let currentStep = 1;
+        const totalSteps = 10;
+
+        function goToStep(step) {
+            if (step < 1 || step > totalSteps) return;
+            if (step > currentStep) {
+                const currentSection = document.querySelector(`.section-card[data-section="${currentStep}"]`);
+                const required = currentSection.querySelectorAll('[required]');
+                for (const el of required) {
+                    if (!el.checkValidity()) {
+                        el.reportValidity();
+                        return;
+                    }
+                }
+            }
+            showStep(step);
+        }
+
+        function showStep(step) {
+            currentStep = step;
+            document.querySelectorAll('.section-card').forEach(el => el.classList.remove('active'));
+            document.querySelector(`.section-card[data-section="${step}"]`).classList.add('active');
+            document.querySelectorAll('.progress-step').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.progress-step').forEach(el => {
+                el.classList.toggle('done', parseInt(el.dataset.step) < step);
+            });
+            document.querySelector(`.progress-step[data-step="${step}"]`).classList.add('active');
+            document.getElementById('stepCounter').textContent = `Step ${step} of ${totalSteps}`;
+            document.getElementById('prevBtn').style.visibility = step === 1 ? 'hidden' : 'visible';
+            if (step === totalSteps) {
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('submitBtn').style.display = '';
+            } else {
+                document.getElementById('nextBtn').style.display = '';
+                document.getElementById('submitBtn').style.display = 'none';
+            }
+        }
+
+        function nextStep() {
+            const currentSection = document.querySelector(`.section-card[data-section="${currentStep}"]`);
+            const required = currentSection.querySelectorAll('[required]');
+            for (const el of required) {
+                if (!el.checkValidity()) {
+                    el.reportValidity();
+                    return;
+                }
+            }
+            if (currentStep < totalSteps) {
+                showStep(currentStep + 1);
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                showStep(currentStep - 1);
+            }
+        }
+
         function handleFileSelect(input, textId, nameId) {
             const textEl = document.getElementById(textId);
             const nameEl = document.getElementById(nameId);
@@ -587,12 +655,25 @@
             employerIndex++;
         }
 
-        // Show remove button on first employer row if there's content
         document.querySelectorAll('.previous-employer-row input').forEach(input => {
             input.addEventListener('input', function () {
                 const removeBtn = this.closest('.previous-employer-row').querySelector('.btn-remove');
                 if (removeBtn) removeBtn.style.display = '';
             });
+        });
+
+        document.getElementById('applyForm').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                const target = e.target;
+                if (target.tagName === 'TEXTAREA') return;
+                e.preventDefault();
+                const submitBtn = document.getElementById('submitBtn');
+                if (submitBtn.style.display !== 'none') {
+                    submitBtn.click();
+                } else {
+                    nextStep();
+                }
+            }
         });
     </script>
 </body>
