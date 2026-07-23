@@ -74,7 +74,7 @@
 
             <div class="form-group">
                 <label>Job Description *</label>
-                <textarea name="description" class="form-control" rows="6" required placeholder="Describe the role, responsibilities, qualifications, and requirements...">{{ old('description', $job->description) }}</textarea>
+                <textarea name="description" class="form-control" rows="14" required placeholder="Describe the role, responsibilities, qualifications, and requirements...">{{ old('description', $job->description) }}</textarea>
                 @error('description')<span style="color:var(--danger);font-size:0.8rem;">{{ $message }}</span>@enderror
             </div>
 
